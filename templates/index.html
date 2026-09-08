@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Spam Email Detection System | AI-Powered Cyber Defense</title>
+    <meta name="description" content="Production-ready AI and Machine Learning system for intelligent email spam detection, suspicious content heuristic scanning, safe URL analysis, and explainable AI insights.">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Custom Cyber Theme CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="cyber-theme">
+
+    <!-- Top Navigation Bar -->
+    <nav class="navbar navbar-expand-lg cyber-navbar sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+                <div class="brand-icon-wrapper">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <span class="brand-title">SmartSpam<span class="text-accent">AI</span></span>
+            </a>
+            
+            <div class="d-flex align-items-center gap-3">
+                <span class="engine-badge d-none d-md-inline-flex align-items-center gap-2">
+                    <span class="pulse-dot"></span>
+                    <span class="text-muted small">AI Engine:</span>
+                    <strong class="text-white small">{{ model_name or 'Active' }}</strong>
+                    <span class="badge bg-accent-soft text-accent ms-1">{{ best_metric or '98.8% F1' }}</span>
+                </span>
+                <a href="#api-section" class="btn btn-outline-cyber btn-sm">
+                    <i class="bi bi-code-slash me-1"></i> API Docs
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="container py-5">
+        
+        <!-- Hero Section -->
+        <header class="text-center hero-section mb-5">
+            <div class="d-inline-flex align-items-center gap-2 px-3 py-1 mb-3 rounded-pill hero-pill">
+                <i class="bi bi-cpu text-accent"></i>
+                <span>Next-Gen Machine Learning Security</span>
+            </div>
+            <h1 class="display-4 fw-bold text-white mb-3">
+                Smart Spam Email Detection
+            </h1>
+            <p class="lead text-secondary mx-auto max-w-700">
+                AI-powered email security analysis using machine learning, deep heuristic threat scanning, safe URL forensics, and explainable decision auditing.
+            </p>
+        </header>
+
+        {% if error_message %}
+        <div class="alert alert-danger alert-cyber d-flex align-items-center mb-4" role="alert">
+            <i class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2 fs-5"></i>
+            <div>{{ error_message }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Quick-Load Demo Sample Presets -->
+        <section class="mb-4">
+            <div class="card cyber-card border-dashed">
+                <div class="card-body p-3">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                        <span class="text-secondary small fw-semibold text-uppercase tracking-wider">
+                            <i class="bi bi-lightning-charge-fill text-warning me-1"></i> Quick Test Presets (1-Click Viva Demo):
+                        </span>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="button" class="btn btn-preset btn-preset-danger" onclick="loadSample('phishing')">
+                                <i class="bi bi-shield-x me-1"></i> Phishing Scam
+                            </button>
+                            <button type="button" class="btn btn-preset btn-preset-warning" onclick="loadSample('lottery')">
+                                <i class="bi bi-currency-dollar me-1"></i> Fake Lottery
+                            </button>
+                            <button type="button" class="btn btn-preset btn-preset-success" onclick="loadSample('business')">
+                                <i class="bi bi-briefcase me-1"></i> Work Meeting (Ham)
+                            </button>
+                            <button type="button" class="btn btn-preset btn-preset-info" onclick="loadSample('personal')">
+                                <i class="bi bi-chat-heart me-1"></i> Personal (Ham)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Input Form Card -->
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card cyber-card shadow-lg mb-5">
+                    <div class="card-header cyber-card-header d-flex align-items-center justify-content-between py-3">
+                        <span class="fw-semibold text-white d-flex align-items-center gap-2">
+                            <i class="bi bi-envelope-open-fill text-accent"></i> Analyze Email Message
+                        </span>
+                        <span class="text-secondary small" id="char-counter">0 characters</span>
+                    </div>
+
+                    <div class="card-body p-4 p-md-5">
+                        <form id="email-analysis-form" method="POST" action="/analyze">
+                            
+                            <!-- Email Subject -->
+                            <div class="mb-4">
+                                <label for="email_subject" class="form-label text-white fw-medium d-flex justify-content-between">
+                                    <span>Email Subject <span class="text-muted fw-normal">(Optional)</span></span>
+                                    <span class="text-muted small">e.g. Urgent: Action Required</span>
+                                </label>
+                                <div class="input-group input-group-cyber">
+                                    <span class="input-group-text"><i class="bi bi-card-heading"></i></span>
+                                    <input type="text" class="form-control" id="email_subject" name="subject" 
+                                           placeholder="Enter or paste the email subject line..." 
+                                           maxlength="250">
+                                </div>
+                            </div>
+
+                            <!-- Email Body -->
+                            <div class="mb-4">
+                                <label for="email_body" class="form-label text-white fw-medium d-flex justify-content-between">
+                                    <span>Email Body Content <span class="text-danger">*</span></span>
+                                    <span class="text-muted small" id="word-counter">0 words</span>
+                                </label>
+                                <textarea class="form-control form-control-cyber" id="email_body" name="body" rows="9" 
+                                          placeholder="Paste full email body text here (including any links, greetings, and disclaimers)..." 
+                                          required></textarea>
+                                <div class="form-text text-secondary mt-2">
+                                    <i class="bi bi-shield-lock me-1"></i> Safe & Private: Content is evaluated in-memory. Links are heuristically inspected without being accessed.
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 pt-2">
+                                <button type="button" class="btn btn-outline-secondary cyber-btn-ghost px-4" onclick="clearForm()">
+                                    <i class="bi bi-arrow-counterclockwise me-1"></i> Clear Form
+                                </button>
+                                
+                                <button type="submit" id="submit-btn" class="btn btn-cyber-primary px-5 py-2">
+                                    <span class="btn-text">
+                                        <i class="bi bi-search me-2"></i> Analyze Email Security
+                                    </span>
+                                    <span class="btn-spinner d-none">
+                                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                        Scanning Indicators...
+                                    </span>
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5 Core Features Grid -->
+        <section class="features-section mb-5">
+            <div class="text-center mb-4">
+                <h2 class="h3 fw-bold text-white mb-2">5-Layer Intelligent Security Architecture</h2>
+                <p class="text-secondary small">Comprehensive multi-stage pipeline designed for production email security.</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Feature 1 -->
+                <div class="col-md-4">
+                    <div class="card cyber-card feature-card h-100">
+                        <div class="card-body p-4">
+                            <div class="feature-icon mb-3">
+                                <i class="bi bi-robot"></i>
+                            </div>
+                            <h3 class="h5 text-white fw-semibold mb-2">1. AI Spam Detection</h3>
+                            <p class="text-secondary small mb-0">
+                                TF-IDF n-gram feature vectorization with trained Linear SVM, Naive Bayes, and Logistic Regression models evaluated on accuracy, precision, recall, and F1-score.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="col-md-4">
+                    <div class="card cyber-card feature-card h-100">
+                        <div class="card-body p-4">
+                            <div class="feature-icon mb-3">
+                                <i class="bi bi-exclamation-diamond"></i>
+                            </div>
+                            <h3 class="h5 text-white fw-semibold mb-2">2. Suspicious Content Analysis</h3>
+                            <p class="text-secondary small mb-0">
+                                Heuristic rule engine scanning for urgency pressure, credential/OTP theft, fake lottery winnings, and structural anomalies like shouting capitalization.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="col-md-4">
+                    <div class="card cyber-card feature-card h-100">
+                        <div class="card-body p-4">
+                            <div class="feature-icon mb-3">
+                                <i class="bi bi-link-45deg"></i>
+                            </div>
+                            <h3 class="h5 text-white fw-semibold mb-2">3. Suspicious URL Forensics</h3>
+                            <p class="text-secondary small mb-0">
+                                Non-request link analysis detecting direct IP hosts, URL shorteners, deceptive subdomains, suspicious TLDs, and path credential lures.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="col-md-6">
+                    <div class="card cyber-card feature-card h-100">
+                        <div class="card-body p-4">
+                            <div class="feature-icon mb-3">
+                                <i class="bi bi-speedometer2"></i>
+                            </div>
+                            <h3 class="h5 text-white fw-semibold mb-2">4. 0–100 Email Risk Score</h3>
+                            <p class="text-secondary small mb-0">
+                                Weighted composite scoring algorithm combining ML probability (50%), threat indicators (25%), URL forensics (15%), and formatting anomalies (10%) into Low, Medium, or High Risk.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="col-md-6">
+                    <div class="card cyber-card feature-card h-100">
+                        <div class="card-body p-4">
+                            <div class="feature-icon mb-3">
+                                <i class="bi bi-lightbulb"></i>
+                            </div>
+                            <h3 class="h5 text-white fw-semibold mb-2">5. Explainable AI Dashboard</h3>
+                            <p class="text-secondary small mb-0">
+                                Transparent decision auditing showing influential vocabulary weights, exact triggered triggers, and tailored cybersecurity remediation guidelines.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- REST API Section -->
+        <section id="api-section" class="mb-5">
+            <div class="card cyber-card">
+                <div class="card-header cyber-card-header py-3">
+                    <h2 class="h5 fw-semibold text-white mb-0 d-flex align-items-center gap-2">
+                        <i class="bi bi-terminal-fill text-accent"></i> Developer REST API
+                    </h2>
+                </div>
+                <div class="card-body p-4">
+                    <p class="text-secondary small mb-3">
+                        Integrate email spam scanning into external applications, mail filters, or security pipelines:
+                    </p>
+                    <div class="code-block-wrapper">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-primary-soft text-primary font-monospace">POST /api/predict</span>
+                            <span class="text-muted small">JSON API</span>
+                        </div>
+                        <pre class="cyber-pre"><code>curl -X POST http://localhost:5000/api/predict \
+  -H "Content-Type: application/json" \
+  -d '{
+    "subject": "URGENT: Bank Account Suspended",
+    "body": "Please confirm your password immediately at http://192.168.1.1/login"
+  }'</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="cyber-footer py-4 border-top border-dark">
+        <div class="container text-center">
+            <p class="text-secondary small mb-1">
+                Smart Spam Email Detection System &bull; Final Year AI / ML Engineering Project
+            </p>
+            <p class="text-muted small mb-0">
+                Built with Python, Flask, Scikit-Learn, and Bootstrap &bull; Ready for Render / Railway Cloud Deployment
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom Application JS -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
